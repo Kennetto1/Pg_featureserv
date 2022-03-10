@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpenLayers Vector Tiles</title>
+
+  <!-- CSS/JS for OpenLayers map  -->
+  <link rel="stylesheet" href="https://openlayers.org/en/v6.1.1/css/ol.css" type="text/css">
+  <script src="https://openlayers.org/en/v6.1.1/build/ol.js"></script>
+
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+    }
+    html, body, #map {
+      height: 100%;
+      width: 100%;
+      font-family: sans-serif;
+    }
+    #meta {
+      background-color: rgba(255,255,255,0.75);
+      color: black;
+      z-index: 2;
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      padding: 10px 20px;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="meta">
+  <h2>Our cartographic application !</h2>
+  <ul>
+        <li><a href="http://localhost:7800/"> pg_tileserv Server</a></li>
+        <li><a href="http://localhost:9000/"> pg_featurserv Server</a></li>
+  </ul>
+</div>
+
+<div id="map"></div>
+
+<script>
+
+var vectorServer = "http://localhost:7800/";
+var parcellesSourceLayer = "public.parcelles";
+var parcellesProps = "?properties=ogc_fid,id,commune,prefixe,section,numero,contenance,created,updated"
+var communesSourceLayer = "public.communes";
+var buildingsSourceLayer = "public.batiments";
+var parcellesUrl = vectorServer + parcellesSourceLayer + "/{z}/{x}/{y}.pbf" + parcellesProps;
+
+const communesUrl = vectorServer + communesSourceLayer + "/{z}/{x}/{y}.pbf";
+const buildingsUrl = vectorServer + buildingsSourceLayer + "/{z}/{x}/{y}.pbf";
+
+var parcellesStyle = new ol.style.Style({
+  stroke: new ol.style.Stroke({
+    width: 1.5,
+    color: "#907a4f"
+  }),
+  fill: new ol.style.Fill({
+    color: "#e2c07c"
+  })
+});
+var buildingsStyle = new ol.style.Style({
+  stroke: new ol.style.Stroke({
+    width: 1.5,
+    color: "#417143"
+  }),
+  fill: new ol.style.Fill({
+    color: "#73c77688"
+  })
+});
+
+// parcelles
+var parcellesLayer = new ol.layer.VectorTile({
+    source: new ol.source.VectorTile({
+      format: new ol.format.MVT(),
+      url: parcellesUrl
+    }),
+    style: parcellesStyle
+  });
+// communes
+var communesLayer = new ol.layer.VectorTile({
+    source: new ol.source.VectorTile({
+      format: new ol.format.MVT(),
+      url: communesUrl
+    }),
+    //style: communesStyle
+  });
+// parcelles
+var buildingsLayer = new ol.layer.VectorTile({
+    source: new ol.source.VectorTile({
+      format: new ol.format.MVT(),
+      url: buildingsUrl
+    }),
+    style: buildingsStyle
+  });
+
+var baseLayer = new ol.layer.Tile({
+  source: new ol.source.XYZ({
+    url: "http://osm.oslandia.io/styles/osm-bright/{z}/{x}/{y}.png"
+  })
+});
+
+var map = new ol.Map({
+  target: 'map',
+  view: new ol.View({
+    center: [260369,6249082],
+    zoom: 16
+  }),
+  layers: [baseLayer, communesLayer, parcellesLayer, buildingsLayer]
+});
+
+
+
+</script>
+
+</body>
+</html>
