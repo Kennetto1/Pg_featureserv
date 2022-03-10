@@ -1,3 +1,9 @@
 El archivo index5.html contiene el código inicial para consumir el archivo de featureserv que ya funciona, tiene agregado un control de capas
 
 Partir desde este punto.
+
+Se agrega el archivo de configuración de featureserv y de tileserv
+
+#Recordar que funcionó bien si se importaban las capas desde ogr2org , no pude importar la capa con shp2psql, marcaba errores, a ver que pasa en Windows.
+
+
